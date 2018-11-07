@@ -1,10 +1,18 @@
-"//NodeJs - udemy course" 
+const express=require('express');
+const bodyParser = require('body-parser');
 
-const http=require('http');
-const serverConfiguration = require('./server.module.js');
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-const server = http.createServer(
-    serverConfiguration.serverConfig    
-);
+const eApp = express();
 
-server.listen(3000);
+eApp.use(bodyParser.urlencoded({ extended: true }));
+
+eApp.use('/admin', adminRoutes);
+eApp.use(shopRoutes);
+
+eApp.use((req, res, next)=>{
+    res.status(404).send('<h1>Page not found</h1>');
+})
+
+eApp.listen(3000);
