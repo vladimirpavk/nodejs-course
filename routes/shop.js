@@ -1,9 +1,12 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
 
 router.get('/', (req, res, next)=>{    
-    res.send('<h1>Welcome to the shop</h1>');
+    res.status(200).sendFile(path.join(__dirname, '../', 'views', 'shop.html'));    
+    //fs.createReadStream('./views/shop.html').pipe(res);
 });
 
 module.exports = router;
