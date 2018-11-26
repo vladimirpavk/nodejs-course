@@ -87,20 +87,20 @@ exports.postEditProduct = (req, res, next) => {
 
 
 exports.getProducts = (req, res, next) => {
-  Product.find().populate('userId')
+  Product.find()//.populate('userId')
     .then(products => {
       products.forEach(
         (product)=>{
           //console.log(product['title']+' - '+product['userId']);
-          console.log(product);
+          //console.log(product);
+          res.render('admin/products', {
+            prods: products,
+            pageTitle: 'Admin Products',
+            path: '/admin/products'
+          });    
         }        
       );      
-      res.render('admin/products', {
-        prods: products,
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
-      });
-    })
+   })
     .catch(err => console.log(err));
 };
 

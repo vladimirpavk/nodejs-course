@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+userSchema.methods.addToCart = function(product){
+ // this.cart.items.
+}
+
 const userModel = mongoose.model('User', userSchema);
 
 module.exports = userModel;
