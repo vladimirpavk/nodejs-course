@@ -43,17 +43,19 @@ exports.getIndex = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId)
-    .then(product => {
-      return req.user.addToCart(product);
-    })
-    .then(result => {
-      console.log(result);
+  req.user.addToCart(prodId)
+  .then(
+    (ok)=>{
       res.redirect('/cart');
-    });
+    }
+  )  
+  .catch(
+    (err)=>{
+
+    }
+  )
 };
 
-/*
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
@@ -68,7 +70,6 @@ exports.getCart = (req, res, next) => {
 };
 
 
-
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
@@ -79,16 +80,22 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-exports.postOrder = (req, res, next) => {
-  let fetchedCart;
+exports.postOrder = (req, res, next)=>{
+  
+}
+
+/*exports.postOrder = (req, res, next) => {
+  /*let fetchedCart;
   req.user
     .addOrder()
     .then(result => {
       res.redirect('/orders');
     })
     .catch(err => console.log(err));
-};
+    console.log("req.body - ", req.body);
+};*/
 
+/*
 exports.getOrders = (req, res, next) => {
   req.user
     .getOrders()
