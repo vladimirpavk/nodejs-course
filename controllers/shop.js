@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -81,31 +82,27 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next)=>{
-  
+   Order.addOrder(req.user)
+    .then(
+      (ok)=>{
+        console.log("ORDER SUCCESSFULLY CREATED !!!");
+        res.redirect('/orders');
+      }
+    )
+    .catch(
+      (err)=>{
+        console.log(err);
+      }
+    )
 }
 
-/*exports.postOrder = (req, res, next) => {
-  /*let fetchedCart;
-  req.user
-    .addOrder()
-    .then(result => {
-      res.redirect('/orders');
-    })
-    .catch(err => console.log(err));
-    console.log("req.body - ", req.body);
-};*/
-
-/*
-exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
-    .then(orders => {
-      res.render('shop/orders', {
-        path: '/orders',
-        pageTitle: 'Your Orders',
-        orders: orders
-      });
-    })
-    .catch(err => console.log(err));
-};
-*/
+exports.getOrders = (req, res, next)=>{
+  Order.getOrders(req.user).then(orders => {
+    res.render('shop/orders', {
+      path: '/orders',
+      pageTitle: 'Your Orders',
+      orders: orders
+    });
+  })
+  .catch(err => console.log(err)); 
+}
