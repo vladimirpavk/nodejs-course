@@ -55,30 +55,47 @@ orderSchema.statics.getOrders = function(user){
     let orders = [];
     return this.find({
         "userId": user._id
-      }).populate('items.productId').then(
-        (foundOrders)=>{
-            foundOrders.forEach(
-                (foundOrder)=>{
-                    let orderItems = [];
-                    foundOrder.items.forEach(                        
-                        (orderItem)=>{
-                            orderItems.push(
-                                {
-                                    "title": orderItem.productId.title,
-                                    "quantity": orderItem.quantity
-                                }
-                            );
+      }).populate('items.productId')
+        /*.then(
+            (foundOrders)=>{
+                foundOrders.forEach(
+                    (foundOrder)=>{
+                        let orderItems = [];
+                        foundOrder.items.forEach(                        
+                            (orderItem)=>{
+                                orderItems.push(
+                                    {
+                                        "title": orderItem.productId.title,
+                                        "quantity": orderItem.quantity
+                                    }
+                                );
+                            }
+                        );                    
+                        orders.push({
+                            _id: foundOrder._id,
+                            items: orderItems
+                        });                                       
+                    }
+                )
+                console.log(orders);
+                return orders;
+            }
+        );*/
+        .map(
+            (foundOrders)=>{
+                return {
+                    _id : foundOrders._id,
+                    items : foundOrders.items.map(
+                        (item)=>{
+                            return {
+                                title: item.productId.title,
+                                quantity: item.quantity
+                            }
                         }
-                    );                    
-                    orders.push({
-                        _id: foundOrder._id,
-                        items: orderItems
-                    });                                       
+                    )
                 }
-            )
-            return orders;
-        }
-    );   
+            }
+        );        
 }
 
 const orderModel = mongoose.model('Order', orderSchema);

@@ -97,12 +97,15 @@ exports.postOrder = (req, res, next)=>{
 }
 
 exports.getOrders = (req, res, next)=>{
-  Order.getOrders(req.user).then(orders => {
+  /*Order.getOrders(req.user).then(orders => {
     res.render('shop/orders', {
       path: '/orders',
       pageTitle: 'Your Orders',
       orders: orders
     });
   })
-  .catch(err => console.log(err)); 
+  .catch(err => console.log(err)); */
+  Order.getOrders(req.user).then(orders => {
+    console.log(orders);
+    });
 }
