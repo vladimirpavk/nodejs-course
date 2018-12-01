@@ -56,6 +56,27 @@ orderSchema.statics.getOrders = function(user){
     return this.find({
         "userId": user._id
       }).populate('items.productId')
+      //može ovako ako malo razmisliš
+        .then(
+            (foundOrders)=>{
+                return foundOrders.map(
+                    (foundOrder)=>{
+                        return {
+                            _id : foundOrder._id,
+                            items : foundOrder.items.map(
+                                (item)=>{
+                                    return {
+                                        "title": item.productId.title,
+                                        "quantity": item.quantity
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )                    
+            }
+        );
+        //može i brute-force ako ne želiš da razmišljaš
         /*.then(
             (foundOrders)=>{
                 foundOrders.forEach(
@@ -80,22 +101,7 @@ orderSchema.statics.getOrders = function(user){
                 console.log(orders);
                 return orders;
             }
-        );*/
-        .map(
-            (foundOrders)=>{
-                return {
-                    _id : foundOrders._id,
-                    items : foundOrders.items.map(
-                        (item)=>{
-                            return {
-                                title: item.productId.title,
-                                quantity: item.quantity
-                            }
-                        }
-                    )
-                }
-            }
-        );        
+        );*/        
 }
 
 const orderModel = mongoose.model('Order', orderSchema);

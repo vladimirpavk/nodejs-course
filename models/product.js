@@ -25,4 +25,8 @@ const productSchema = new mongoose.Schema({
   }
 });
 
+productSchema.statics.fetchAll = function(){
+   return this.find();
+}
+
 module.exports = mongoose.model('Product', productSchema);
