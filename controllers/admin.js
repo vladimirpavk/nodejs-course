@@ -1,7 +1,6 @@
 const Product = require('../models/product');
 
-exports.postAddProduct = (req, res, next) => {
-  console.log('postAddProduct');
+exports.postAddProduct = (req, res, next) => {  
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
@@ -17,7 +16,6 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(result => {
-      // console.log(result);
       console.log('Created Product');
       res.redirect('/admin/products');
     })
@@ -32,7 +30,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: req.cookies['loggedIn']
+    isAuthenticated: req.session['loggedIn']
   });
 };
 
@@ -42,8 +40,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findById(prodId)
-    // Product.findById(prodId)
+  Product.findById(prodId)    
     .then(product => {
       if (!product) {
         return res.redirect('/');
@@ -53,7 +50,7 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isAuthenticated: req.cookies['loggedIn']
+        isAuthenticated: req.session['loggedIn']
       });
     })
     .catch(err => console.log(err));
@@ -95,7 +92,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isAuthenticated: req.cookies['loggedIn']
+        isAuthenticated: req.session['loggedIn']
       });    
    })
     .catch(err => console.log(err));
