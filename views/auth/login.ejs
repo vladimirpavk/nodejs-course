@@ -6,8 +6,11 @@
 <body>
    <%- include('../includes/navigation.ejs') %>
 
-    <main>
+    <main>       
         <form class="login-form" action="/login" method="POST">
+            <% if(loginError) { %>
+                <h5 style="margin:auto; color:red; display: block">Username or password is not valid...</h5>
+            <% } %>
             <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email">
