@@ -60,41 +60,7 @@ mongoose.connect(conString, { useNewUrlParser: true })
   .then(
     (result)=>{
       //connected
-      console.log('Connected to testBaza');
-      User.findOne({
-        name : 'vladimirpavk'
-      }).then(
-        (userFound)=>{
-          // Everything is ok, user can be found or not found
-          console.log(userFound);
-
-          if(userFound===null){
-            console.log('User not found');
-            const user = new User({
-              name : 'vladimirpavk',
-              email: 'vladimirpavk@telekom.rs',       
-              cart:{
-                items: []
-              }
-            });
-            user.save().then(
-              (res)=>{
-                //console.log(res);
-              }
-            ).catch(
-              (err)=>{
-                console.log(err);
-              }
-            );
-          }
-        }
-      )  
-      .catch(
-        (err)=>{
-          console.log(err);
-        }                       
-      )
-      
+      console.log('Connected to testBaza');   
       app.listen(3000);
     }
   )
