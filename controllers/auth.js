@@ -4,8 +4,9 @@ const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail');
 
 const User = require('../models/user');
+const config = require('../app-config');
 
-sgMail.setApiKey('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');
+sgMail.setApiKey(config.sendGridApi);
 
 exports.getLogin = (req, res, next)=>{
     //console.log(req.session['loggedIn']);
