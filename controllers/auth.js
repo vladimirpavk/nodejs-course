@@ -9,7 +9,6 @@ const config = require('../app-config');
 sgMail.setApiKey(config.sendGridApi);
 
 exports.getLogin = (req, res, next)=>{
-    //console.log(req.session['loggedIn']);
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
@@ -119,7 +118,7 @@ exports.getReset = (req, res, next)=>{
         pageTitle: 'Reset',
         isAuthenticated: req.session['isAuthenticated'],
         resetError: req.session['resetError'],
-        resetErrorMsg: req.session['resetErrorMsg'] ? req.session['resetErrorMsg'] : ''
+        resetErrorMsg: req.session['resetError'] ? req.session['resetErrorMsg'] : ''
     });
 }
 
@@ -136,6 +135,8 @@ exports.postReset = (req, res, next)=>{
                 return res.redirect('/reset');
             }
             else{
+                req.session['resetError'] = false;
+
                 crypto.randomBytes(32, (err, buffer)=>{
                     if(err){
                         console.log(err);
@@ -172,12 +173,43 @@ exports.getResetToken = (req, res, next)=>{
     }).then(
         (result)=>{
             if( !result || (result.resetTokenExpiration < Date.now()) ){
+                console.log(!result);
+                console.log(result.resetTokenExpiration < Date.now());
                 //user with specific token not found or token expired
-
+                req.session['resetError'] = true;
+                req.session['resetErrorMsg'] = 'User with specific token not found or token expired';
+                res.redirect('/reset');
             }
             else{
-                
+                res.render('auth/reset-password', {
+                    path: '/reset-password',
+                    pageTitle: 'Reset password',
+                    isAuthenticated: req.session['isAuthenticated'],
+                    resetToken: req.params['token'],
+                    resetError: req.session['resetError'],
+                    resetErrorMsg: req.session['resetError'] ? req.session['resetErrorMsg'] : ''
+                });
             }
         }
     ).catch((err)=>console.log(err));
+}
+
+exports.postResetPassword = (req, res, next)=>{
+//req.body['token']
+//req.body['password']
+    User.findOne(
+        {
+            resetToken: req.body['token']
+        }
+    ).then(
+        (result)=>{           
+            bcrypt.hash(req.body['password'], 12).then(
+                (hashedPassword)=>{
+                    result.password = hashedPassword.toString('hex');
+                    result.save();
+                    res.redirect('/login');
+                }
+            ).catch(err=>console.log(err));                       
+        }
+    ).catch(err=>console.log(err));
 }
