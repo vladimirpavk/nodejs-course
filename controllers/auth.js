@@ -9,11 +9,29 @@ const config = require('../app-config');
 sgMail.setApiKey(config.sendGridApi);
 
 exports.getLogin = (req, res, next)=>{
+    if(req.session.sites){
+        if(!req.session.sites.login){
+            req.session.sites = {
+                login: {
+                    error: false
+                }
+            }
+        }
+    }
+    else{
+        req.session.sites = {
+            login: {
+                error: false
+            }
+        }
+    }
+
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
         isAuthenticated: req.session['loggedIn'],
-        loginError: req.session['loginError']
+        error: req.session.sites.login.error,
+        errorMsg: req.session.sites.login.errorMsg
       });
 }
 
@@ -26,7 +44,12 @@ exports.postLogin = (req, res, next)=>{
         (result)=>{
             if(result === null){
                 // no document with specific query found
-                req.session['loginError'] = true;
+                req.session.sites = {
+                    login : {
+                        error : true,
+                        errorMsg : 'User with specified email was not found'
+                    }
+                };                
                 res.redirect('/login');
             }
             else{
@@ -36,10 +59,23 @@ exports.postLogin = (req, res, next)=>{
                         if(ok){
                             req.session['loggedIn'] = true;
                             req.session['userId'] = result._id;
+                            req.session.sites = {
+                                login : {
+                                    error : false,
+                                    //errorMsg može ali ne mora da se briše jer se i onako ne prikazuje
+                                    errorMsg : ''
+                                }                               
+                            }
+                            
                             res.redirect('/');     
                         }
-                        else{
-                            req.session['loginError'] = true;
+                        else{                                                                                                                                             
+                            req.session.sites = {
+                                login: {
+                                    error : true,
+                                    errorMsg : 'Please provide valid password'
+                                }                                
+                            };        
                             res.redirect('/login');
                         }
                     }

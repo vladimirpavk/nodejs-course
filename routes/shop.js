@@ -4,12 +4,13 @@ const express = require('express');
 
 const shopController = require('../controllers/shop');
 const isAuth = require('../middleware/is-auth');
+const sessionGarbageCleaner = require('../middleware/session-garbage-cleaner');
 
 const router = express.Router();
 
 router.get('/', shopController.getIndex);
 
-router.get('/products', shopController.getProducts);
+router.get('/products', sessionGarbageCleaner, shopController.getProducts);
 router.get('/products/:productId', shopController.getProduct);
 router.post('/cart', isAuth, shopController.postCart);
 router.get('/cart', isAuth, shopController.getCart);
