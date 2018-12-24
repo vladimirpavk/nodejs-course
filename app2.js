@@ -18,3 +18,4 @@ let proba = {
 for(let x in proba){
     console.log(x);
 }
+

@@ -1,7 +1,7 @@
 const crypto = require('crypto');
-
 const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail');
+const expValidator = require('express-validator/check');
 
 const User = require('../models/user');
 const config = require('../app-config');
@@ -98,13 +98,19 @@ exports.getSignUp = (req, res, next)=>{
         path: '/signup',
         pageTitle: 'Signup',
         isAuthenticated: false,
-        signUpError: req.session['signUpError']
+        signUpError: req.session['signUpError'],
+        signUpMsg: req.session['signUpMsg']
     })
 }
 
 exports.postSignUp = (req, res, next)=>{
     const email = req.body['email'];
     const password = req.body['password'];
+    
+    const errors = expValidator.validationResult(req);
+    if(!errors.isEmpty()){
+        console.log(errors);
+    }
 
     User.findOne({
         "email" : email
@@ -112,6 +118,7 @@ exports.postSignUp = (req, res, next)=>{
         (result)=>{
             if(result){
                 req.session['signUpError'] = true;
+                req.session['signUpMsg'] = "User already exists...";
                 return res.redirect('/signup');
             }
             bcrypt.hash(password, 12).then(

@@ -7,9 +7,9 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <form class="login-form" action="/signup" method="POST">
+        <form class="login-form" action="/signup" method="POST" novalidate>
             <% if(signUpError) { %>
-                <h5 style="margin:auto; color:red; display: block">Username already exists...</h5>
+                <h5 style="margin:auto; color:red; display: block; border: 1px solid;"><%= signUpMsg %></h5>
             <% } %>
             <div class="form-control">
                 <label for="email">E-Mail</label>
