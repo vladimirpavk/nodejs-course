@@ -107,11 +107,22 @@ exports.postSignUp = (req, res, next)=>{
     const email = req.body['email'];
     const password = req.body['password'];
     
+    let errorMsg = '';
     const errors = expValidator.validationResult(req);
     if(!errors.isEmpty()){
-        console.log(errors);
+        //console.log(errors.array());
+        errors.array().forEach(
+            (arrElement)=>{
+                if(arrElement.param==='email'){
+                    errorMsg = 'email - '+arrElement.msg;
+                }
+            }
+        )
+        req.session['signUpError'] = true;
+        req.session['signUpMsg'] = errorMsg;
+        return res.redirect('/signup');
     }
-
+   
     User.findOne({
         "email" : email
     }).then(
