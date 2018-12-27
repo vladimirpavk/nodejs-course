@@ -35,7 +35,12 @@ exports.getLogin = (req, res, next)=>{
       });
 }
 
-exports.postLogin = (req, res, next)=>{      
+exports.postLogin = (req, res, next)=>{
+    const errors = expValidator.validationResult(req);
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+    }
+    
     User.findOne(
         {
             "email" : req.body['email']            

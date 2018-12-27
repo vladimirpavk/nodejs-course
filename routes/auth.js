@@ -4,7 +4,16 @@ const expValidator = require('express-validator/check');
 const authController = require('../controllers/auth');
 
 router.get('/login', authController.getLogin);
-router.post('/login', authController.postLogin);
+router.post('/login', 
+[
+    expValidator.check('email')
+        .isEmail()
+        .withMessage('Not valid email...'),
+    expValidator.check('password')
+        .isLength({ min: 5 })
+        .withMessage('Password must be minimum 5 characters long')
+],  
+    authController.postLogin);
 
 router.post('/logout', authController.postLogout);
 
