@@ -38,56 +38,41 @@ exports.getLogin = (req, res, next)=>{
 exports.postLogin = (req, res, next)=>{
     const errors = expValidator.validationResult(req);
     if(!errors.isEmpty()){
-        console.log(errors.array());
-    }
-    
-    User.findOne(
-        {
-            "email" : req.body['email']            
-        }
-    ).then(
-        (result)=>{
-            if(result === null){
-                // no document with specific query found
-                req.session.sites = {
-                    login : {
-                        error : true,
-                        errorMsg : 'User with specified email was not found'
+        return res.render('auth/login', {
+            path: '/login',
+            pageTitle: 'Login',
+            isAuthenticated: req.session['loggedIn'],
+            error: true,
+            errorMsg: errors.array()
+          });
+    }  
+        //check hashed password
+        return bcrypt.compare(req.body['password'], req.passFromCollection).then(
+            (ok)=>{
+                if(ok){
+                    req.session['loggedIn'] = true;
+                    req.session['userId'] = req.pass_id;
+                    req.session.sites = {
+                        login : {
+                            error : false,
+                            //errorMsg može ali ne mora da se briše jer se i onako ne prikazuje
+                            errorMsg : ''
+                        }                               
                     }
-                };                
-                res.redirect('/login');
+                    
+                    res.redirect('/');     
+                }
+                else{                                                                                                                                             
+                    req.session.sites = {
+                        login: {
+                            error : true,
+                            errorMsg : 'Please provide valid password'
+                        }                                
+                    };        
+                    res.redirect('/login');
+                }
             }
-            else{
-                //check hashed password
-                bcrypt.compare(req.body['password'], result.password).then(
-                    (ok)=>{
-                        if(ok){
-                            req.session['loggedIn'] = true;
-                            req.session['userId'] = result._id;
-                            req.session.sites = {
-                                login : {
-                                    error : false,
-                                    //errorMsg može ali ne mora da se briše jer se i onako ne prikazuje
-                                    errorMsg : ''
-                                }                               
-                            }
-                            
-                            res.redirect('/');     
-                        }
-                        else{                                                                                                                                             
-                            req.session.sites = {
-                                login: {
-                                    error : true,
-                                    errorMsg : 'Please provide valid password'
-                                }                                
-                            };        
-                            res.redirect('/login');
-                        }
-                    }
-                ).catch((err)=>console.log(err));                        
-            }
-        }
-    ).catch((err)=>console.log(err));                  
+        ).catch((err)=>console.log(err));                                              
 }
 
 exports.postLogout = (req, res, next)=>{
