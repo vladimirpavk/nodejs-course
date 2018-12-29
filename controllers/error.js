@@ -6,3 +6,12 @@ exports.get404 = (req, res, next) => {
     isAuthenticated: req.session['loggedIn']
   });
 };
+
+exports.get500 = (req, res, next) => {
+  res.status(500).render('500', 
+  { 
+    pageTitle: 'Server error', 
+    path: '/500',
+    isAuthenticated: req.session['loggedIn']
+  });
+};

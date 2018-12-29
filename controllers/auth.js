@@ -93,7 +93,7 @@ exports.getSignUp = (req, res, next)=>{
     })
 }
 
-exports.postSignUp = (req, res, next)=>{
+exports.postSignUp = (req, res, next)=>{  
     const email = req.body['email'];
     const password = req.body['password'];
     
@@ -112,7 +112,7 @@ exports.postSignUp = (req, res, next)=>{
         req.session['signUpMsg'] = errorMsg;
         return res.redirect('/signup');
     }
-   
+
     User.findOne({
         "email" : email
     }).then(
@@ -153,7 +153,11 @@ exports.postSignUp = (req, res, next)=>{
                 }
             ).catch((err)=>console.log(err));            
         }
-    ).catch((err)=>console.log(err));
+    ).catch((err)=>{
+        const error = new Error('Database operation failed...');
+        error.httpStatusCode = 500;
+        return next(err);
+    });
 }
 
 exports.getReset = (req, res, next)=>{
@@ -207,7 +211,13 @@ exports.postReset = (req, res, next)=>{
                 })
             }
         }
-    ).catch((err)=>console.log(err));
+    ).catch(
+        (err)=>{
+            const error = new Error('Database operation failed...');
+            error.httpStatusCode = 500;
+            return next(err);
+        }
+    );
 }
 
 exports.getResetToken = (req, res, next)=>{
@@ -235,12 +245,16 @@ exports.getResetToken = (req, res, next)=>{
                 });
             }
         }
-    ).catch((err)=>console.log(err));
+    ).catch(
+        (err)=>{
+            const error = new Error('Database operation failed...');
+            error.httpStatusCode = 500;
+            return next(err);
+        }
+    );
 }
 
 exports.postResetPassword = (req, res, next)=>{
-//req.body['token']
-//req.body['password']
     User.findOne(
         {
             resetToken: req.body['token']
@@ -255,5 +269,10 @@ exports.postResetPassword = (req, res, next)=>{
                 }
             ).catch(err=>console.log(err));                       
         }
-    ).catch(err=>console.log(err));
+    ).catch(
+        err=>{
+            const error = new Error('Database operation failed...');
+            error.httpStatusCode = 500;
+            return next(err);
+        });
 }

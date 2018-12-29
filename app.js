@@ -41,7 +41,9 @@ app.use((req,res,next)=>{
         req.user = user;     
         next();
       }
-    );  
+    ).catch((err)=>{
+      next(new Error(err));
+    }); 
   }
   else{
     next();
@@ -53,7 +55,14 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500);
+
 app.use(errorController.get404);
+
+app.use((error, req, res, next)=>{
+  //console.log(error);
+  res.redirect('/500');
+})
 
 const conString = 'mongodb://localhost:27017/testBaza';
 mongoose.connect(conString, { useNewUrlParser: true })
