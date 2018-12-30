@@ -75,6 +75,7 @@ mongoose.connect(conString, { useNewUrlParser: true })
   )
   .catch(
     (err)=>{
-      console.log("Something bad happened...", err);
+      throw new Error(err);
+      //console.log('Something bad happened...');
     }
   );
