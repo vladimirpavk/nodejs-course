@@ -2,7 +2,7 @@ const Product = require('../models/product');
 
 exports.postAddProduct = (req, res, next) => {  
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product({
@@ -13,7 +13,9 @@ exports.postAddProduct = (req, res, next) => {
     'userId' : req.user
   });  
 
-  product
+  console.log(imageUrl);
+
+  /*product
     .save()
     .then(result => {
       console.log('Created Product');
@@ -21,7 +23,7 @@ exports.postAddProduct = (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
-    });
+    });*/
 };
 
 exports.getAddProduct = (req, res, next) => {

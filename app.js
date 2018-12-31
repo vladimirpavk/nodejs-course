@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const multer = require('multer');
+
+//MongoDB configuration
 const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
   uri: 'mongodb://localhost:27017/testBaza',
@@ -19,11 +22,40 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+//multer configuration
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb)=>{
+    cb(null, 'images');
+  },
+  filename: (req, file, cb)=>{    
+    cb(null, Date.now()+'-'+file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb)=>{
+  if(file.mimetype === 'image/png' ||
+     file.mimetype === 'image/jpg' ||
+     file.mimetype === 'image/jpeg'){
+       cb(null, true);
+     }
+  else{
+    cb(null, false);
+  }
+}
+
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer(
+  {
+    storage: fileStorage,
+    fileFilter: fileFilter
+  }
+).single('image'));
+//app.use(multer({dest: 'images'}).single('image'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(session({
