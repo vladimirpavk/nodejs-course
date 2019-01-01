@@ -2,18 +2,29 @@ const Product = require('../models/product');
 
 exports.postAddProduct = (req, res, next) => {  
   const title = req.body.title;
-  const imageUrl = req.file;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product({
+
+  /*if(!image){
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product',
+      path: 'admin/edit-product',
+      editing: false,
+      error: true,
+      errorMsg: 'Picture file format invalid...'
+    })
+  }*/
+
+  /*const product = new Product({
     'title': title,
     'price': price,
     'description': description,
-    'imageUrl': imageUrl,
+    'imageUrl': image,
     'userId' : req.user
   });  
 
-  console.log(imageUrl);
+  console.log(imageUrl);*/
 
   /*product
     .save()
@@ -32,7 +43,8 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: req.session['loggedIn']
+    isAuthenticated: req.session['loggedIn'],
+    error: false
   });
 };
 
