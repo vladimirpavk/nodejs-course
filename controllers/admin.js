@@ -6,27 +6,27 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  /*if(!image){
+  console.log(image);
+  if(!image){    
     return res.status(422).render('admin/edit-product', {
-      pageTitle: 'Add product',
-      path: 'admin/edit-product',
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
       editing: false,
+      isAuthenticated: req.session['loggedIn'],
       error: true,
       errorMsg: 'Picture file format invalid...'
-    })
-  }*/
+    });
+  }
 
-  /*const product = new Product({
+  const product = new Product({
     'title': title,
     'price': price,
     'description': description,
-    'imageUrl': image,
+    'imageUrl': '/'+image.filename,
     'userId' : req.user
-  });  
+  });    
 
-  console.log(imageUrl);*/
-
-  /*product
+  product
     .save()
     .then(result => {
       console.log('Created Product');
@@ -34,7 +34,7 @@ exports.postAddProduct = (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
-    });*/
+    });
 };
 
 exports.getAddProduct = (req, res, next) => {

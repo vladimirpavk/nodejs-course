@@ -57,6 +57,7 @@ app.use(multer(
 //app.use(multer({dest: 'images'}).single('image'));
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'images')));
 app.use(cookieParser());
 app.use(session({
   secret:'my-secret-code',
