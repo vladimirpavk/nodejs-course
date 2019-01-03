@@ -111,3 +111,19 @@ exports.getOrders = (req, res, next)=>{
   })
   .catch(err => console.log(err))
 };
+
+exports.getInvoice = (req, res, next)=>{
+  //console.log(req.params['invoiceId'], req.user);
+  Order.isUserInvoice(req.user, req.params['invoiceId']).then(
+    (isFound)=>{
+      if(isFound){
+        //console.log(__dirname+'/data/invoices/Invoice - '+req.params['invoiceId']);
+        return res.download(__dirname+'/../data/invoices/Invoice - '+req.params['invoiceId']+'.pdf');
+      }
+      else{
+        return res.redirect('/');
+      }      
+    }
+  )
+  .catch(err=>console.log(err));
+}

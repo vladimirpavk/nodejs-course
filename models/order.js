@@ -104,6 +104,21 @@ orderSchema.statics.getOrders = function(user){
         );*/        
 }
 
+orderSchema.statics.isUserInvoice = function(user, invoiceId){
+    //console.log(user._id, invoiceId);
+
+    return this.find({
+        "_id" : new mongoose.Types.ObjectId(invoiceId),
+        "userId" : user._id
+    }).then(
+        (foundOrders)=>{
+            if(foundOrders.length === 0) return false;
+            return true;            
+        }
+    )
+    .catch((err)=>{console.log(err)});
+}
+
 const orderModel = mongoose.model('Order', orderSchema);
 
 module.exports = orderModel;
